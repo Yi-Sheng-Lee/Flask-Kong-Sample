@@ -1,0 +1,18 @@
+version: "3"
+services: 
+  mssp-database:
+    image: mariadb:10.8
+    restart: always  
+    networks: 
+      - mssp-net
+    environment:
+      MARIADB_USER: user
+      MARIADB_PASSWORD: test123
+      MARIADB_ROOT_PASSWORD: test123
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./initsql:/docker-entrypoint-initdb.d
+networks:
+  mssp-net:
+    driver: bridge

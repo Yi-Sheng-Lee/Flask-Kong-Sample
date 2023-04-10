@@ -1,0 +1,5 @@
+CREATE SCHEMA `mssp` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+
+CREATE USER 'msspmgr'@'%' IDENTIFIED BY 'billows12345';
+
+GRANT ALL PRIVILEGES ON mssp.* TO 'msspmgr'@'%';
