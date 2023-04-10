@@ -22,7 +22,7 @@ services:
     environment:
       - NGINX_API_HOST=mssp
     ports:
-      - "80:80"
+      - "8084:80"
       - "443:443"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -72,7 +72,7 @@ services:
     networks:
       - mssp-net
     environment:
-      - VERSION=v2.0.3.1
+      - VERSION=v2.0.3.2
       - DB_USER=msspmgr
       - DB_DB=mssp
       - REDDIS_HOST=redis
