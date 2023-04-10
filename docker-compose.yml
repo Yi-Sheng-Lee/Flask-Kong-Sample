@@ -103,17 +103,17 @@ services:
         ./wait-for-it.sh -t 60 mssp-database:3306 -- ./main.sh
 
 
-  flask-socketio:
-    build: ./websocket/flask
-    restart: always
-    volumes:
-      - ./websocket/flask:/app
-      - "/var/log/billows:/var/log/billows"
-      - /etc/localtime:/etc/localtime:ro
-    networks:
-      - mssp-net
-    ports:
-      - 8081:8081
+#  flask-socketio:
+#    build: ./websocket/flask
+#    restart: always
+#    volumes:
+#      - ./websocket/flask:/app
+#      - "/var/log/billows:/var/log/billows"
+#      - /etc/localtime:/etc/localtime:ro
+#    networks:
+#      - mssp-net
+#    ports:
+#      - 8081:8081
 #  mssp-migration:
 #    image: mssp:v1
 #    working_dir: /home/mssp-service/
