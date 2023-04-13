@@ -39,5 +39,6 @@ class IsacWizardApi(Enum):
 
 
 class KongApi(Enum):
-    CONSUMER = web_80 + "://{url}:8001/consumers"
+    CONSUMERS = web_80 + "://{url}:8001/consumers"
     CONSUMER_JWT = web_80 + "://{url}:8001/consumers/{consumer}/jwt"
+    CONSUMER_GROUP = web_80 + "://{url}:8001/consumers/{consumer}/acls"

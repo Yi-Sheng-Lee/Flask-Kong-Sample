@@ -52,7 +52,6 @@ class BaseConfig(object):
     # JWT
     # JWT_SECRET_KEY = "rse"
     JWT_SECRET_KEY = "this is mssp product"
-    JWT_ENCODE_ISSUER = "mssp"
     JWT_BLACKLIST_ENABLED = True
     JWT_ACCESS_TOKEN_EXPIRES = 3000
     JWT_REFRESH_TOKEN_EXPIRES = 7200

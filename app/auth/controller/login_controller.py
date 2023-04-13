@@ -20,19 +20,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-@jwt.user_claims_loader
-def add_claims_to_access_token(identity):
-    user_auth = get_user_auth_by_identity(identity)
-    user = get_user_by_uid(identity)
-    user_data = {
-        "auth": user_auth,
-        "user": user["name"],
-        "user_uid": user["uid"],
-        "company_id": user["company_id"],
-        "is_admin_company": True if user['is_admin_company'] else False,
-        "is_admin": True if user["is_admin"] else False
-    }
-    return user_data
+# @jwt.user_claims_loader
+# def add_claims_to_access_token(identity):
+#     user_auth = get_user_auth_by_identity(identity)
+#     user = get_user_by_uid(identity)
+#     user_data = {
+#         "auth": user_auth,
+#         "user": user["name"],
+#         "user_uid": user["uid"],
+#         "company_id": user["company_id"],
+#         "is_admin_company": True if user['is_admin_company'] else False,
+#         "is_admin": True if user["is_admin"] else False
+#     }
+#     return user_data
 
 
 @jwt.unauthorized_loader

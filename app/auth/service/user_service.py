@@ -1,4 +1,7 @@
+import requests
 from marshmallow import INCLUDE
+from time import sleep
+from flask import current_app
 from sqlalchemy import desc
 
 from app.auth.dao.role_dao import RoleDao
@@ -10,6 +13,8 @@ from common.enum.service_enum import ServiceError
 from app.auth.model.models import User
 from app.auth.schema.schemas import UserSchema, UserBulkSchema, UserFieldSchema
 from app.auth.service.role_service import get_role_permissions_by_id
+
+from common.enum.api_enum import KongApi
 import logging
 import bcrypt
 import uuid
@@ -97,6 +102,34 @@ def add_user_to_db(**kwargs):
     try:
         user_dao.add(user)
 
+        kong_consumer_url = KongApi.CONSUMERS.value
+        kong_consumer_group_url = KongApi.CONSUMER_GROUP.value
+        kong_consumer_jwt_url = KongApi.CONSUMER_JWT.value
+
+        consumer_payload = {
+            "username": user.name,
+            "custom_id": user.name,
+            "tags": ["mssp"]
+        }
+
+        # kong 新增 consumer
+        kong_consumer_url = kong_consumer_url.format(url=current_app.config["KONG_URL"])
+        consumer = requests.post(kong_consumer_url, json=consumer_payload)
+        consumer = consumer.json()
+
+        # 對該 consumer 新增 group
+        kong_consumer_group_url = kong_consumer_group_url.format(url=current_app.config["KONG_URL"],
+                                                                 consumer=consumer["username"])
+
+        consumer_group_payload = {"group": "mssp"}
+        requests.post(kong_consumer_group_url, json=consumer_group_payload)
+
+        # 對該 consumer 新增 jwt
+        kong_consumer_jwt_url = kong_consumer_jwt_url.format(url=current_app.config["KONG_URL"],
+                                                                 consumer=consumer["username"])
+        consumer_jwt_payload = {"algorithm": "HS256", "secret": "this is mssp product"}
+        requests.post(kong_consumer_jwt_url, json=consumer_jwt_payload)
+
         # init default dashboard
         # init_user_dashboard(user.uid)
     except Exception as e:
@@ -175,8 +208,15 @@ def set_user_is_delete(**kwargs):
 def delete_user_from_db(**args):
     user_bulk_schema = UserBulkSchema()
     users = user_bulk_schema.load(args).get("users")
+    kong_consumer_delete_url = KongApi.CONSUMERS.value
+    kong_consumer_delete_url = kong_consumer_delete_url.format(url=current_app.config["KONG_URL"])
     for user_uid in users:
         user_dao = UserDao()
         user = user_dao.get_by_uid(user_uid)
         user_dao.delete(user)
+
+        # 刪除 kong 相對應 consumer
+        kong_delete_url = kong_consumer_delete_url + f"/{user.name}"
+        requests.delete(kong_delete_url)
+        sleep(0.5)
     return args
